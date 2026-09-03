@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Plus,
   Boxes,
@@ -33,6 +33,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Label } from '@/components/ui/label';
 import { api } from '@/lib/ipc';
+import { useHistoryStore } from '@/stores/history-store';
 
 export function CollectionTree() {
   const {
@@ -66,7 +67,7 @@ export function CollectionTree() {
 
   // Hover state for 'hover' mode
   const [isHovered, setIsHovered] = useState(false);
-  const [historyCount, setHistoryCount] = useState(0);
+  const { count: historyCount, loadHistory } = useHistoryStore();
   const [historyClearTrigger, setHistoryClearTrigger] = useState(0);
 
   // Dialog input states
@@ -79,15 +80,81 @@ export function CollectionTree() {
   const [renameColor, setRenameColor] = useState('#0275E2');
   const [renameDesc, setRenameDesc] = useState('');
 
-  // Fetch history count
+  const newColInputRef = useRef<HTMLInputElement>(null);
+  const newFolderInputRef = useRef<HTMLInputElement>(null);
+  const editColInputRef = useRef<HTMLInputElement>(null);
+  const hoverContainerRef = useRef<HTMLDivElement>(null);
+  const isMouseInsideDrawer = useRef(false);
+
+  const handleMouseEnter = () => {
+    isMouseInsideDrawer.current = true;
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent) => {
+    isMouseInsideDrawer.current = false;
+    const related = e.relatedTarget as HTMLElement | null;
+    if (
+      related?.closest?.(
+        '[role="menu"], [data-radix-popper-content-wrapper], [data-radix-menu-content]'
+      )
+    ) {
+      return;
+    }
+    const hasOpenMenu = document.querySelector(
+      '[role="menu"], [data-radix-popper-content-wrapper], [data-radix-menu-content]'
+    );
+    if (
+      hasOpenMenu ||
+      Boolean(editingCollection) ||
+      isNewCollectionModalOpen ||
+      isNewFolderModalOpen
+    ) {
+      return;
+    }
+    setIsHovered(false);
+  };
+
+  // Close hover drawer when mouse is outside both drawer and open menus
   useEffect(() => {
-    api.history
-      .list(100)
-      .then((items) => {
-        if (items) setHistoryCount(items.length);
-      })
-      .catch(() => {});
-  }, [activeSidebarView]);
+    if (sidebarMode !== 'hover') return;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (isHovered && !isMouseInsideDrawer.current) {
+        const target = e.target as HTMLElement | null;
+        const isOverDrawer = Boolean(
+          hoverContainerRef.current?.contains(target as Node)
+        );
+        const isOverMenu = Boolean(
+          target?.closest?.(
+            '[role="menu"], [data-radix-popper-content-wrapper], [data-radix-menu-content], [data-slot="dialog-portal"]'
+          )
+        );
+
+        if (!isOverDrawer && !isOverMenu) {
+          const hasOpenMenu = document.querySelector(
+            '[role="menu"], [data-radix-popper-content-wrapper], [data-radix-menu-content]'
+          );
+          if (
+            !hasOpenMenu &&
+            !Boolean(editingCollection) &&
+            !isNewCollectionModalOpen &&
+            !isNewFolderModalOpen
+          ) {
+            setIsHovered(false);
+          }
+        }
+      }
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    return () => window.removeEventListener('pointermove', handlePointerMove);
+  }, [sidebarMode, isHovered, editingCollection, isNewCollectionModalOpen, isNewFolderModalOpen]);
+
+  // Load history on mount
+  useEffect(() => {
+    loadHistory();
+  }, [loadHistory]);
 
   // Handlers
   const handleCreateCollection = async (e: React.FormEvent) => {
@@ -277,7 +344,7 @@ export function CollectionTree() {
 
       {/* Bottom Footer 3-State Dropdown */}
       <div className="w-full px-1 pt-2 border-t border-border/40 flex justify-center">
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <button
               className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/40 flex items-center justify-center transition-colors"
@@ -518,8 +585,9 @@ export function CollectionTree() {
       {/* 2. EXPAND ON HOVER MODE */}
       {sidebarMode === 'hover' && (
         <div
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          ref={hoverContainerRef}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
           className="relative h-full w-12"
         >
           {/* Base icon rail in normal flow */}
@@ -527,7 +595,11 @@ export function CollectionTree() {
 
           {/* Floating drawer over workspace on hover */}
           {isHovered && (
-            <div className="absolute top-0 bottom-0 left-0 w-64 z-40 shadow-2xl bg-card border-r border-border animate-in fade-in-0 slide-in-from-left-2 duration-150 flex flex-col">
+            <div
+              className="absolute top-0 bottom-0 left-0 w-64 z-40 shadow-2xl bg-card border-r border-border animate-in fade-in-0 slide-in-from-left-2 duration-150 flex flex-col"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
               {renderExpandedContent()}
             </div>
           )}
@@ -539,7 +611,13 @@ export function CollectionTree() {
 
       {/* New Collection Modal */}
       <Dialog open={isNewCollectionModalOpen} onOpenChange={setNewCollectionModalOpen}>
-        <DialogContent className="sm:max-w-[420px]">
+        <DialogContent
+          className="sm:max-w-[420px]"
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            setTimeout(() => newColInputRef.current?.focus(), 50);
+          }}
+        >
           <DialogHeader>
             <DialogTitle className="text-sm font-semibold">Create New Collection</DialogTitle>
           </DialogHeader>
@@ -547,11 +625,11 @@ export function CollectionTree() {
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-foreground">Collection Name</Label>
               <Input
-                autoFocus
+                ref={newColInputRef}
                 placeholder="e.g. Authentication API"
                 value={newCollectionName}
                 onChange={(e) => setNewCollectionName(e.target.value)}
-                className="h-8 text-xs bg-card"
+                className="h-8 text-xs bg-card select-text cursor-text"
               />
             </div>
 
@@ -575,7 +653,7 @@ export function CollectionTree() {
                   type="text"
                   value={newCollectionColor}
                   onChange={(e) => setNewCollectionColor(e.target.value)}
-                  className="h-8 text-xs font-mono w-28 uppercase bg-card"
+                  className="h-8 text-xs font-mono w-28 uppercase bg-card select-text cursor-text"
                   placeholder="#0275E2"
                 />
                 <span className="text-[11px] text-muted-foreground">Click color box to pick any color</span>
@@ -588,7 +666,7 @@ export function CollectionTree() {
                 placeholder="Brief description of this collection"
                 value={newCollectionDesc}
                 onChange={(e) => setNewCollectionDesc(e.target.value)}
-                className="h-8 text-xs bg-card"
+                className="h-8 text-xs bg-card select-text cursor-text"
               />
             </div>
 
@@ -617,7 +695,13 @@ export function CollectionTree() {
 
       {/* New Folder Modal */}
       <Dialog open={isNewFolderModalOpen} onOpenChange={closeNewFolderModal}>
-        <DialogContent className="sm:max-w-[360px]">
+        <DialogContent
+          className="sm:max-w-[360px]"
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            setTimeout(() => newFolderInputRef.current?.focus(), 50);
+          }}
+        >
           <DialogHeader>
             <DialogTitle className="text-sm font-semibold">Create New Folder</DialogTitle>
           </DialogHeader>
@@ -625,11 +709,11 @@ export function CollectionTree() {
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-foreground">Folder Name</Label>
               <Input
-                autoFocus
+                ref={newFolderInputRef}
                 placeholder="e.g. Users"
                 value={newFolderName}
                 onChange={(e) => setNewFolderName(e.target.value)}
-                className="h-8 text-xs bg-card"
+                className="h-8 text-xs bg-card select-text cursor-text"
               />
             </div>
             <DialogFooter className="pt-2">
@@ -660,7 +744,16 @@ export function CollectionTree() {
         open={Boolean(editingCollection)}
         onOpenChange={(open) => !open && setEditingCollection(null)}
       >
-        <DialogContent className="sm:max-w-[420px]">
+        <DialogContent
+          className="sm:max-w-[420px]"
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
+            setTimeout(() => {
+              editColInputRef.current?.focus();
+              editColInputRef.current?.select();
+            }, 50);
+          }}
+        >
           <DialogHeader>
             <DialogTitle className="text-sm font-semibold">Edit Collection Details</DialogTitle>
           </DialogHeader>
@@ -668,10 +761,10 @@ export function CollectionTree() {
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-foreground">Collection Name</Label>
               <Input
-                autoFocus
+                ref={editColInputRef}
                 value={renameValue}
                 onChange={(e) => setRenameValue(e.target.value)}
-                className="h-8 text-xs bg-card"
+                className="h-8 text-xs bg-card select-text cursor-text"
               />
             </div>
 
@@ -695,7 +788,7 @@ export function CollectionTree() {
                   type="text"
                   value={renameColor}
                   onChange={(e) => setRenameColor(e.target.value)}
-                  className="h-8 text-xs font-mono w-28 uppercase bg-card"
+                  className="h-8 text-xs font-mono w-28 uppercase bg-card select-text cursor-text"
                   placeholder="#0275E2"
                 />
                 <span className="text-[11px] text-muted-foreground">Click color box to pick any color</span>
@@ -708,7 +801,7 @@ export function CollectionTree() {
                 placeholder="Brief description of this collection"
                 value={renameDesc}
                 onChange={(e) => setRenameDesc(e.target.value)}
-                className="h-8 text-xs bg-card"
+                className="h-8 text-xs bg-card select-text cursor-text"
               />
             </div>
 

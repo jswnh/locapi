@@ -23,6 +23,7 @@ import {
 import { api } from '@/lib/ipc';
 import { useEnvStore } from '@/stores/env-store';
 import { useWorkspaceStore } from '@/stores/workspace-store';
+import { useHistoryStore } from '@/stores/history-store';
 import { replaceVariables } from '@/lib/variable-replacer';
 import { toast } from 'sonner';
 
@@ -178,6 +179,7 @@ export function GrpcClient({ url, tabId }: GrpcClientProps) {
       }
     } finally {
       setIsCalling(false);
+      useHistoryStore.getState().loadHistory();
     }
   };
 

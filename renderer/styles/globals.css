@@ -85,6 +85,10 @@
     font-family: var(--font-sans);
     user-select: none;
   }
+  input, textarea, select, [contenteditable="true"] {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+  }
   code, pre, kbd, samp, .font-mono {
     font-family: var(--font-mono);
   }

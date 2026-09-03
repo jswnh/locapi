@@ -7,6 +7,7 @@ import { runPreRequestScript, runTestScript } from '@/lib/script-runner';
 import { v4 as uuidv4 } from 'uuid';
 import { ApiRequest, RequestSettings } from '@/types/db';
 import { useSettingsStore } from '@/stores/settings-store';
+import { useHistoryStore } from '@/stores/history-store';
 import { toast } from 'sonner';
 
 export function useRequestRunner() {
@@ -185,6 +186,8 @@ export function useRequestRunner() {
         };
 
         setTabResponse(tabId, enrichedResponse);
+        // Refresh reactive history store immediately
+        useHistoryStore.getState().loadHistory();
 
         if (response.error) {
           toast.error(response.error);
@@ -205,6 +208,7 @@ export function useRequestRunner() {
           body: null,
           contentType: '',
         });
+        useHistoryStore.getState().loadHistory();
         toast.error(err.message || 'Failed to execute request');
       }
     },

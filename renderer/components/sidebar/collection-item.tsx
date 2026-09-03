@@ -273,7 +273,7 @@ export function CollectionItem({
                 {totalRequestsCount}
               </span>
 
-              <DropdownMenu>
+              <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <button
                     type="button"
@@ -316,7 +316,10 @@ export function CollectionItem({
                     <span>Export Collection...</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => onRenameCollection(collection)}
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      setTimeout(() => onRenameCollection(collection), 0);
+                    }}
                     className="gap-2 cursor-pointer"
                   >
                     <Palette className="size-3.5 shrink-0" style={{ color: collectionColor }} />
@@ -368,7 +371,10 @@ export function CollectionItem({
             <span>Export Collection...</span>
           </ContextMenuItem>
           <ContextMenuItem
-            onClick={() => onRenameCollection(collection)}
+            onSelect={(e) => {
+              e.preventDefault();
+              setTimeout(() => onRenameCollection(collection), 0);
+            }}
             className="gap-2"
           >
             <Palette className="size-3.5 shrink-0" style={{ color: collectionColor }} />

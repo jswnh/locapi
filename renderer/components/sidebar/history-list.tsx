@@ -6,46 +6,30 @@ import { MethodBadge } from '@/components/ui/method-badge';
 import { useWorkspaceStore, createDefaultRequest } from '@/stores/workspace-store';
 import { cn } from '@/lib/utils';
 
+import { useHistoryStore } from '@/stores/history-store';
+
 interface HistoryListProps {
   onCountChange?: (count: number) => void;
   clearTrigger?: number;
 }
 
 export function HistoryList({ onCountChange, clearTrigger }: HistoryListProps = {}) {
-  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const { items: historyItems, isLoading, loadHistory, clearHistory } = useHistoryStore();
   const { openTab } = useWorkspaceStore();
 
-  const fetchHistory = async () => {
-    setIsLoading(true);
-    try {
-      const items = await api.history.list(50);
-      setHistoryItems(items);
-      onCountChange?.(items.length);
-    } catch (err) {
-      console.error('Failed to load history:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  useEffect(() => {
+    loadHistory();
+  }, [loadHistory]);
 
   useEffect(() => {
-    fetchHistory();
-  }, []);
+    onCountChange?.(historyItems.length);
+  }, [historyItems.length, onCountChange]);
 
   useEffect(() => {
     if (clearTrigger && clearTrigger > 0) {
-      api.history
-        .clear()
-        .then(() => {
-          setHistoryItems([]);
-          onCountChange?.(0);
-        })
-        .catch((err) => {
-          console.error('Failed to clear history:', err);
-        });
+      clearHistory();
     }
-  }, [clearTrigger]);
+  }, [clearTrigger, clearHistory]);
 
   const handleRestore = (item: HistoryItem) => {
     const restored = createDefaultRequest({
