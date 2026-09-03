@@ -1,0 +1,13 @@
+appId: com.jswnh.locapi
+productName: Locapi
+copyright: Copyright © 2026 Jswnh
+npmRebuild: false
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - from: .
+    filter:
+      - package.json
+      - app
+publish: null
