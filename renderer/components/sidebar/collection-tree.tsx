@@ -32,7 +32,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Label } from '@/components/ui/label';
-import { api } from '@/lib/ipc';
 import { useHistoryStore } from '@/stores/history-store';
 
 export function CollectionTree() {
@@ -526,10 +525,7 @@ export function CollectionTree() {
       ) : (
         /* History View */
         <div className="flex-1 overflow-hidden flex flex-col">
-          <HistoryList
-            onCountChange={setHistoryCount}
-            clearTrigger={historyClearTrigger}
-          />
+          <HistoryList clearTrigger={historyClearTrigger} />
         </div>
       )}
 
