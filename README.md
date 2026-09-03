@@ -3,12 +3,8 @@
 > **Modern, Lightweight, Local-First Desktop API Client & Multi-Protocol Testing Tool**
 
 <p align="center">
-  <a href="https://github.com/jswnh/locapi/releases/latest/download/Locapi-Setup-1.0.0.exe">
-    <img src="https://img.shields.io/badge/Download%20Setup%20(Windows)-Locapi%20v1.0.0--beta-0275E2?style=for-the-badge&logo=windows&logoColor=white" alt="Download Locapi for Windows" />
-  </a>
-  &nbsp;
-  <a href="https://github.com/jswnh/locapi/releases/latest/download/Locapi-1.0.0-win-portable.zip">
-    <img src="https://img.shields.io/badge/Download%20Portable%20(.zip)-Locapi%20v1.0.0--beta-4F46E5?style=for-the-badge&logo=windows&logoColor=white" alt="Download Portable (.zip)" />
+  <a href="https://github.com/jswnh/locapi/releases/tag/v1.0.0-beta">
+    <img src="https://img.shields.io/badge/Download%20Locapi-v1.0.0--beta%20(Windows)-0275E2?style=for-the-badge&logo=windows&logoColor=white" alt="Download Locapi for Windows" />
   </a>
   &nbsp;
   <a href="https://github.com/jswnh/locapi/releases">
@@ -22,13 +18,17 @@ Locapi is an offline-capable, privacy-focused desktop API development environmen
 
 ## 📥 Download & Installation
 
-Get the latest release for Windows 10 / 11:
+Download the latest version directly from the official GitHub release page:
 
-| Platform | Package Type | Architecture | Direct Download |
+👉 [**🚀 View & Download Locapi v1.0.0-beta Release**](https://github.com/jswnh/locapi/releases/tag/v1.0.0-beta)
+
+Available assets on the release page:
+
+| Package | Format | Architecture | Description |
 | :--- | :--- | :---: | :--- |
-| **Windows 10 / 11** | **Setup Installer (`.exe`)** | `x64` | [**⬇️ Download Locapi-Setup-1.0.0.exe**](https://github.com/jswnh/locapi/releases/latest/download/Locapi-Setup-1.0.0.exe) |
-| **Windows 10 / 11** | **Standalone Portable (`.zip`)** | `x64` | [**📦 Download Locapi-1.0.0-win-portable.zip**](https://github.com/jswnh/locapi/releases/latest/download/Locapi-1.0.0-win-portable.zip) |
-| **Windows 10 / 11** | **Zipped Installer (`.zip`)** | `x64` | [**📁 Download Locapi-Setup-1.0.0.zip**](https://github.com/jswnh/locapi/releases/latest/download/Locapi-Setup-1.0.0.zip) |
+| **`Locapi-Setup-1.0.0.exe`** | NSIS Installer | `x64` | Standard Windows setup with desktop and start menu shortcuts |
+| **`Locapi-1.0.0-win-portable.zip`** | Standalone Portable | `x64` | Portable archive—unzip and run without installation |
+| **`Locapi-Setup-1.0.0.zip`** | Zipped Installer | `x64` | Compressed installer archive |
 
 > [!NOTE]
 > **Windows SmartScreen Notice**  
