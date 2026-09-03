@@ -7,6 +7,10 @@
     <img src="https://img.shields.io/badge/Download%20Setup%20(Windows)-Locapi%20v1.0.0--beta-0275E2?style=for-the-badge&logo=windows&logoColor=white" alt="Download Locapi for Windows" />
   </a>
   &nbsp;
+  <a href="https://github.com/jswnh/locapi/releases/latest/download/Locapi-1.0.0-win-portable.zip">
+    <img src="https://img.shields.io/badge/Download%20Portable%20(.zip)-Locapi%20v1.0.0--beta-4F46E5?style=for-the-badge&logo=windows&logoColor=white" alt="Download Portable (.zip)" />
+  </a>
+  &nbsp;
   <a href="https://github.com/jswnh/locapi/releases">
     <img src="https://img.shields.io/badge/All%20Releases-GitHub-238636?style=for-the-badge&logo=github&logoColor=white" alt="All Releases" />
   </a>
@@ -18,16 +22,24 @@ Locapi is an offline-capable, privacy-focused desktop API development environmen
 
 ## 📥 Download & Installation
 
-Get the latest installer for Windows:
+Get the latest release for Windows 10 / 11:
 
-| Platform | Format | Architecture | Download |
+| Platform | Package Type | Architecture | Direct Download |
 | :--- | :--- | :---: | :--- |
-| **Windows 10 / 11** | **NSIS Installer (`.exe`)** | `x64` | [**⬇️ Download Locapi Setup 1.0.0.exe**](https://github.com/jswnh/locapi/releases/latest/download/Locapi-Setup-1.0.0.exe) |
-| **Windows 10 / 11** | **Standalone / Portable** | `x64` | [**📦 View Latest Release Assets**](https://github.com/jswnh/locapi/releases/latest) |
+| **Windows 10 / 11** | **Setup Installer (`.exe`)** | `x64` | [**⬇️ Download Locapi-Setup-1.0.0.exe**](https://github.com/jswnh/locapi/releases/latest/download/Locapi-Setup-1.0.0.exe) |
+| **Windows 10 / 11** | **Standalone Portable (`.zip`)** | `x64` | [**📦 Download Locapi-1.0.0-win-portable.zip**](https://github.com/jswnh/locapi/releases/latest/download/Locapi-1.0.0-win-portable.zip) |
+| **Windows 10 / 11** | **Zipped Installer (`.zip`)** | `x64` | [**📁 Download Locapi-Setup-1.0.0.zip**](https://github.com/jswnh/locapi/releases/latest/download/Locapi-Setup-1.0.0.zip) |
+
+> [!NOTE]
+> **Windows SmartScreen Notice**  
+> Because Locapi is an independent open-source project without an enterprise EV code-signing certificate, Windows SmartScreen may show an *"Unrecognized app"* prompt when you first launch the installer.  
+> Simply click **More info** → **Run anyway** to proceed.
 
 > [!TIP]
-> **Locally Built Executable:**  
-> If you built the project on your machine, your installer is generated in [`dist/Locapi Setup 1.0.0.exe`](file:///C:/Users/Josuan/Desktop/locapi/dist/Locapi%20Setup%201.0.0.exe) and the standalone unpacked app in [`dist/win-unpacked/Locapi.exe`](file:///C:/Users/Josuan/Desktop/locapi/dist/win-unpacked/Locapi.exe).
+> **Locally Built Executables:**  
+> If you built the project from source, your artifacts are generated in:
+> - Installer: [`dist/Locapi-Setup-1.0.0.exe`](file:///C:/Users/Josuan/Desktop/locapi/dist/Locapi-Setup-1.0.0.exe)
+> - Portable Folder: [`dist/win-unpacked/Locapi.exe`](file:///C:/Users/Josuan/Desktop/locapi/dist/win-unpacked/Locapi.exe)
 
 ---
 
