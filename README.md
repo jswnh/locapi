@@ -24,11 +24,22 @@ Download the latest version directly from the official GitHub release page:
 
 Available assets on the release page:
 
-| Package | Format | Architecture | Description |
+| Package | Format | Size | Description |
 | :--- | :--- | :---: | :--- |
-| **`Locapi-Setup-1.0.0.exe`** | NSIS Installer | `x64` | Standard Windows setup with desktop and start menu shortcuts |
-| **`Locapi-1.0.0-win-portable.zip`** | Standalone Portable | `x64` | Portable archive—unzip and run without installation |
-| **`Locapi-Setup-1.0.0.zip`** | Zipped Installer | `x64` | Compressed installer archive |
+| **`Locapi-Setup-1.0.0.zip`** | Zipped Installer | ~118 MB | Contains the Windows setup installer with desktop & start menu shortcuts |
+| **`Locapi-1.0.0-win-portable.zip`** | Standalone Portable | ~169 MB | Portable build—unzip and run `Locapi.exe` directly without installation |
+
+<details>
+<summary><b>🔒 Verify SHA-256 Checksums</b></summary>
+
+```text
+Locapi-Setup-1.0.0.zip:
+7ae7b7a09f64312b0ca67eb91ffca797a5d4c5fb17c860fb1fd3e6ce3b9e9780
+
+Locapi-1.0.0-win-portable.zip:
+ecb7024f8d841adcb1b02c5057af8dd4c1323e7c91e013b641952038fc2f7228
+```
+</details>
 
 > [!NOTE]
 > **Windows SmartScreen Notice**  
